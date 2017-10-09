@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
 from bs4 import BeautifulSoup
@@ -13,15 +14,15 @@ class Antonym():
         return self._en(word) if word.encode("utf-8").isalnum() else self._jp(word)
 
     def _jp(self, word):
-        antnm = ""
+        antnmlist = list()
         soup = self._open_soup("http://thesaurus.weblio.jp/antonym/content/" + urllib.parse.quote(word))
         try:
-            antnm = soup.find(id = 'main').find(class_ = 'wtghtAntnm').a.string
+            antnmlist.append(soup.find(id = 'main').find(class_ = 'wtghtAntnm').a.string)
         except AttributeError:
             print("cannot find the antonym.")
         except Exception as e:
             print(e)
-        return antnm
+        return antnmlist
 
     def _en(self, word):
         antnmlist = []
@@ -46,4 +47,6 @@ if __name__ == '__main__':
     if len(sys.argv) > 1:
         word = sys.argv[1]
 
-    print(Antonym().get(word))
+    for antnym in Antonym().get(word):
+        print(word, "<->", antnym)
+
